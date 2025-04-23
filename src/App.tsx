@@ -1,28 +1,26 @@
 import { Route, Routes } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { getMemes, Meme } from "./api/getMemes";
+import { useAppDispatch } from "./store/hooks";
+import { setMemes } from "./store/memes";
 
 import IndexPage from "@/pages/index";
 import TablePage from "@/pages/table";
 import CardsPage from "@/pages/cards";
 
 function App() {
-  const [data, setData] = useState<Meme[]>();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await getMemes();
+    const getAllMemes = async () => {
+      const res = await getMemes();
 
-        setData(res.memes);
-      } catch (e) {
-        console.log(e);
-      }
-    })();
-  }, []);
+      dispatch(setMemes(res.memes));
+    };
 
-  console.log(data);
+    getAllMemes();
+  }, [dispatch]);
 
   return (
     <Routes>
